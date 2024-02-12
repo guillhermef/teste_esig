@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  tomcat-open_redirect:
+    #open redirect
+    container_name: tomcat-open_redirect
+    image: tomcat:9.0.65
+    ports:
+      - "8081:8080"
+    volumes:
+      - /root/teste_esig/open-redirect/webapps/ROOT:/usr/local/tomcat/webapps/ROOT
+      - /root/teste_esig/open-redirect/conf/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml
+      - /root/teste_esig/open-redirect/conf/web.xml:/usr/local/tomcat/conf/web.xml
+    
+  tomcat-open_redirect_patched:
+    #open redirect PATCHED
+    container_name: tomcat-open_redirect_patched
+    image: tomcat:9.0.80
+    ports:
+      - "8082:8080"
+    volumes:
+      - /root/teste_esig/open-redirect/webapps/ROOT:/usr/local/tomcat/webapps/ROOT
+      - /root/teste_esig/open-redirect/conf/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml
+      - /root/teste_esig/open-redirect/conf/web.xml:/usr/local/tomcat/conf/web.xml
+
+  tomcat-ErrorJsonInjection:
+    #information disclosure
+    container_name: tomcat-ErrorJsonInjection
+    image: tomcat:9.0.65
+    ports:
+      - "8083:8080"
+    volumes:
+      - /root/teste_esig/jsonError_injection/server.xml:/usr/local/tomcat/conf/server.xml
+      - /root/teste_esig/jsonError_injection/webapps/ROOT/WEB-INF/classes/Servlet.java:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes/Servlet.java
+      - /root/teste_esig/jsonError_injection/webapps/ROOT/index.html:/usr/local/tomcat/webapps/ROOT/index.html
+      - /root/teste_esig/jsonError_injection/webapps/ROOT/WEB-INF/web.xml:/usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
+    command: bash -c "javac -cp /usr/local/tomcat/lib/servlet-api.jar:/usr/local/tomcat/webapps/ROOT/WEB-INF/classes /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/Servlet.java && catalina.sh run"
